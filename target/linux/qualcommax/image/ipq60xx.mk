@@ -23,6 +23,18 @@ define Device/EmmcImage
 	IMAGE/sysupgrade.bin/squashfs := append-rootfs | pad-to 64k | sysupgrade-tar rootfs=$$$$@ | append-metadata
 endef
 
+define Device/cmiot_ax18
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := CMIOT
+	DEVICE_MODEL := AX18
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	DEVICE_DTS_CONFIG := config@cp03-c1
+	SOC := ipq6000
+endef
+TARGET_DEVICES += cmiot_ax18
+
 define Device/glinet_gl-ax1800
 	$(call Device/FitImage)
 	$(call Device/UbiFit)
@@ -86,7 +98,10 @@ define Device/redmi_ax5-jdcloud
 	DEVICE_MODEL := AX5 JDCloud
 	DEVICE_DTS_CONFIG := config@cp03-c1
 	SOC := ipq6000
-	DEVICE_PACKAGES := ipq-wifi-redmi_ax5-jdcloud
+	KERNEL_SIZE := 6144k
+	BLOCKSIZE := 64k
+	IMAGE/factory.bin := append-kernel | pad-to $$$$(KERNEL_SIZE) |  append-rootfs | append-metadata
+	DEVICE_PACKAGES := ipq-wifi-redmi_ax5-jdcloud kmod-fs-ext4 mkf2fs f2fsck kmod-fs-f2fs
 endef
 TARGET_DEVICES += redmi_ax5-jdcloud
 
